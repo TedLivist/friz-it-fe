@@ -1,0 +1,81 @@
+/* Mobile-first responsive navbar */
+.navbar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation links container - push to right */
+.navbar-wrapper {
+  gap: 0;
+}
+
+.navbar-wrapper .nav-link {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  margin-left: auto; /* This pushes the first nav link to the right */
+}
+
+.navbar-wrapper .nav-link:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.navbar-wrapper .nav-link:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Additional spacing between nav links */
+.navbar-wrapper .nav-link + .nav-link {
+  margin-left: 0.5rem;
+}
+.navbar-wrapper .nav-link.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.navbar-wrapper .nav-link.active:hover {
+  background-color: #2563eb;
+}
+
+/* Mobile styles (default) */
+@media (max-width: 640px) {
+  .navbar-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .navbar-wrapper .nav-link {
+    margin-left: 0;
+    margin-right: 0.5rem;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 641px) {
+  .navbar-wrapper {
+    padding: 1rem 2rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .navbar-wrapper {
+    padding: 1rem 3rem;
+  }
+}
