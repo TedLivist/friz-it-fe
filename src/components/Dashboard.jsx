@@ -3,6 +3,7 @@ import { Web3Context } from "../App";
 import { ethers } from "ethers";
 import { contractAddress } from "../../utils/contractDetails";
 import { tokenABI, tokenAddress, tokenThinABI } from "../../utils/usdcTokenDetails";
+import { timeCalculation } from "../../utils/timeCalculation";
 
 const provider = new ethers.JsonRpcProvider(import.meta.env.VITE_SEPOLIA_URL)
 
@@ -37,6 +38,11 @@ const Dashboard = () => {
 
       const initOwner = await contract.owner()
       setOwner(initOwner)
+      
+      const deadlineInMilliseconds = Number(initDeadline) * 1000
+      
+      const dateNow = Date.now()
+      timeCalculation(dateNow, deadlineInMilliseconds)
     }
 
     initializeVariables()
@@ -48,7 +54,7 @@ const Dashboard = () => {
       {signer && (
         <div>
           Hahaha. Home
-          {console.log(USDCBalance)}
+          {/* {console.log(USDCBalance)} */}
         </div>
       )}
     </>
