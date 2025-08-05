@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import '../stylings/Navbar.css'
+// import '../stylings/Navbar.css'
 import { Web3Context } from "../App";
 import { useContext } from "react";
 
@@ -9,8 +9,8 @@ const Navbar = () => {
   return (
     <div className="navbar-wrapper">
       Friz It
-      {/* <NavLink to="/" className="nav-link">Homepage</NavLink>
-      <NavLink to="/transactions" className="nav-link">Transactions</NavLink> */}
+      <NavLink to="/" className="nav-link">Homepage</NavLink>
+      {/* <NavLink to="/transactions" className="nav-link">Transactions</NavLink> */}
       {signer.address && (
         <span className="nav-link">{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>
       )}

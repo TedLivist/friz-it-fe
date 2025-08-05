@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import { ethers } from 'ethers';
 import { contractABI, contractAddress } from '../utils/contractDetails';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AccountIndicator from './components/AccountIndicator';
+import Dashboard from './components/Dashboard';
 
 export const Web3Context = createContext()
 const provider = new ethers.BrowserProvider(window.ethereum);
@@ -73,11 +75,12 @@ function App() {
     <Web3Context.Provider value={webContextValue}>
       <BrowserRouter>
         <Navbar />
-    {/* //     <Routes> */}
-         {/* <Route exact path="/" element={<Home contract={contract} signer={signer} />} />
+        <AccountIndicator />
+        <Routes>
+         <Route exact path="/" element={<Dashboard />} />
 
-    //       <Route exact path="/transactions" element={<Transactions />} /> */}
-    {/* //     </Routes> */}
+         {/* <Route exact path="/transactions" element={<Transactions />} /> */}
+        </Routes>
       </BrowserRouter>
     </Web3Context.Provider>
   )
