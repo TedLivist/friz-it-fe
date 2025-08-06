@@ -15,20 +15,19 @@ const Dashboard = () => {
   const [deadline, setDeadline] = useState(null)
   const [recipient, setRecipient] = useState(null)
   const [owner, setOwner] = useState(null)
-  const [deadlineAdjustments, setDeadlineAdjustments] = useState(null)
   const [token, setToken] = useState(null)
+  const [timerQuote, setTimerQuote] = useState('')
 
   useEffect(() => {
     if (!signer) return
 
     const initializeVariables = async () => {
-
-      setEthBalance(await provider.getBalance(contractAddress))
+      setEthBalance(Number(await provider.getBalance(contractAddress)))
       
       const newToken = await contract.token() // fetch the string address of the ERC20 token used in the contract
       const initToken = new ethers.Contract(newToken, tokenThinABI, signer)
       setToken(initToken)
-      setUSDCBalance(await initToken.balanceOf(await contract.getAddress()))
+      setUSDCBalance(Number(await initToken.balanceOf(await contract.getAddress())))
       
       const initDeadline = await contract.deadline()
       setDeadline(Number(initDeadline))
@@ -38,22 +37,41 @@ const Dashboard = () => {
 
       const initOwner = await contract.owner()
       setOwner(initOwner)
-      
-      const deadlineInMilliseconds = Number(initDeadline) * 1000
-      
-      const dateNow = Date.now()
-      timeCalculation(dateNow, deadlineInMilliseconds)
+
+      // const networkName = await provider.getNetwork()
+      // console.log(networkName.name)
     }
 
     initializeVariables()
   }, [signer])
 
+  useEffect(() => {
+    if(!deadline) return
+
+    const deadlineInMilliseconds = deadline * 1000
+
+    const updateTimerQuote = () => {
+      const dateNow = Date.now()
+      const timeQuote = timeCalculation(dateNow, deadlineInMilliseconds)
+      setTimerQuote(timeQuote)
+    }
+
+    updateTimerQuote()
+    const interval = setInterval(updateTimerQuote, 10000)
+
+    return () => clearInterval(interval)
+  }, [deadline])
 
   return (
     <>
       {signer && (
         <div>
           Hahaha. Home
+          <div>ETH Balance | {ethBalance}</div>
+          <div>USDC Balance | {USDCBalance}</div>
+          <div>Deadline timer | {timerQuote}</div>
+          <div>Owner | {owner}</div>
+          <div>Recipient address | {recipient}</div>
           {/* {console.log(USDCBalance)} */}
         </div>
       )}

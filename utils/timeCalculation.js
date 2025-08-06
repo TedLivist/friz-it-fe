@@ -4,15 +4,10 @@ export const timeCalculation = (now, deadline) => {
   // console.log('date now in milliseconds', now)
   // console.log('date now in seconds', now/1000)
 
-  console.log(new Date(now))
-  console.log(new Date(deadline))
-
   // console.log(new Date(Math.abs(new Date(now) - new Date(deadline))))
 
   const difference = deadline - now
-  console.log('diff', difference)
   const isPast = difference < 0
-  console.log('past?', isPast)
   const absoluteDiff = Math.abs(difference)
 
   const seconds = Math.floor(absoluteDiff / 1000)
@@ -38,5 +33,23 @@ export const timeCalculation = (now, deadline) => {
     timeQuote = `${seconds}s`
   }
 
-  console.log(timeQuote)
+  const formattedDeadline = new Date(deadline)
+
+  const dayName = formattedDeadline.toLocaleDateString('en-US', { weekday: 'short' })
+  const dayNumber = formattedDeadline.getDate()
+  const monthName = formattedDeadline.toLocaleDateString('en-US', { month: 'long' })
+  const fullYear = formattedDeadline.getFullYear()
+  const fullHour = formattedDeadline.getHours().toString().padStart(2, '0')
+  const fullMinutes = formattedDeadline.getMinutes().toString().padStart(2, '0')
+  const fullSec = formattedDeadline.getSeconds().toString().padStart(2, '0')
+  console.log(dayName, dayNumber, monthName, fullYear, `${fullHour}:${fullMinutes}:${fullSec}`)
+
+  // console.log(stringifiedDeadline)
+
+  if(isPast) {
+    return `${timeQuote} has passed since deadline`
+  } else {
+    return `${timeQuote} remaining till deadline`
+  }
+
 }
