@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Web3Context } from "../App";
 import { ethers } from "ethers";
-import { contractAddress } from "../../utils/contractDetails";
 import { timeCalculation } from "../../utils/timeCalculation";
 
 const provider = new ethers.JsonRpcProvider(import.meta.env.VITE_SEPOLIA_URL)
