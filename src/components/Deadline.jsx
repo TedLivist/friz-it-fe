@@ -8,31 +8,53 @@ const Deadline = () => {
 
   const [newDeadline, setNewDeadline] = useState('')
   const [timerQuote, setTimerQuote] = useState('')
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   useEffect(() => {
     setTimerQuote(timeCalculation(Date.now(), (deadline * 1000)))
   }, [deadline])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     console.log(newDeadline)
 
     const newDate = new Date(newDeadline)
-    console.log(newDate)
-
+    
     const newDateInMilliseconds = newDate.getTime()
-    console.log(newDateInMilliseconds)
+    const newDateInSeconds = newDateInMilliseconds / 1000
 
-    console.log(new Date(newDateInMilliseconds))
+    try {
+      if (!contract.runner) {
+        console.error("Invalid signer!")
+      }
+
+      const tx = await contract.adjustDeadline(newDateInSeconds)
+
+      console.log(tx.hash)
+      console.log(tx)
+    } catch (e) {
+      console.error(e.reason)
+      setError(e.reason)
+    }
   }
 
   return (
     <>
       {signer && (
         <div>
-          <div>{timerQuote}</div>
           <div>Manage deadline</div>
+          <div>{timerQuote}</div>
           <form onSubmit={handleSubmit}>
             <label htmlFor="newDeadline">Set new deadline</label>
             <input
@@ -42,6 +64,10 @@ const Deadline = () => {
               onChange={(e) => setNewDeadline(e.target.value)}
               placeholder="Enter new deadline"
             />
+
+            {(error) && (
+              <p className="error-message">{error}</p>
+            )}
             <button type="submit">Set Deadline</button>
           </form>
           <div>

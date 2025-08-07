@@ -11,7 +11,7 @@ const Navbar = () => {
       Friz It
       <NavLink to="/" className="nav-link">Homepage</NavLink>
       <NavLink to="/manageDeadline" className="nav-link">Deadline</NavLink>
-      {/* <NavLink to="/transactions" className="nav-link">Transactions</NavLink> */}
+      <NavLink to="/withdrawal" className="nav-link">Withdrawal</NavLink>
       {signer.address && (
         <span className="nav-link">{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>
       )}
