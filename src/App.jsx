@@ -8,6 +8,7 @@ import { contractABI, contractAddress } from '../utils/contractDetails';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AccountIndicator from './components/AccountIndicator';
 import Dashboard from './components/Dashboard';
+import Deadline from './components/Deadline';
 
 export const Web3Context = createContext()
 const provider = new ethers.BrowserProvider(window.ethereum);
@@ -15,13 +16,17 @@ const provider = new ethers.BrowserProvider(window.ethereum);
 function App() {
   const [signer, setSigner] = useState("")
   const [contract, setContract] = useState("")
+  const [deadline, setDeadline] = useState(null)
 
   const connectWallet = async () => {
     await provider.send("eth_requestAccounts", []);
 
     const initSigner = await provider.getSigner();
     setSigner(initSigner)
-    setContract(new ethers.Contract(contractAddress, contractABI, initSigner));
+    const initContract = new ethers.Contract(contractAddress, contractABI, initSigner);
+    setContract(initContract)
+    const initDeadline = await initContract.deadline()
+    setDeadline(Number(initDeadline))
 
     const chainId = await window.ethereum.request({ method: 'eth_chainId' })
     if (chainId !== '0xaa36a7') { // Sepolia's chainId
@@ -67,8 +72,8 @@ function App() {
   }
 
   const webContextValue = useMemo(() => 
-    ({ contract, signer, disconnectWallet, connectWallet }),
-    [contract, signer, disconnectWallet, connectWallet]
+    ({ contract, signer, deadline, disconnectWallet, connectWallet }),
+    [contract, signer, deadline, disconnectWallet, connectWallet]
   )
 
   return (
@@ -78,6 +83,8 @@ function App() {
         <AccountIndicator />
         <Routes>
          <Route exact path="/" element={<Dashboard />} />
+
+         <Route path="/manageDeadline" element={<Deadline />} />
 
          {/* <Route exact path="/transactions" element={<Transactions />} /> */}
         </Routes>

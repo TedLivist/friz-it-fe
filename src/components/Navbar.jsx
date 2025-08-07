@@ -10,6 +10,7 @@ const Navbar = () => {
     <div className="navbar-wrapper">
       Friz It
       <NavLink to="/" className="nav-link">Homepage</NavLink>
+      <NavLink to="/manageDeadline" className="nav-link">Deadline</NavLink>
       {/* <NavLink to="/transactions" className="nav-link">Transactions</NavLink> */}
       {signer.address && (
         <span className="nav-link">{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>

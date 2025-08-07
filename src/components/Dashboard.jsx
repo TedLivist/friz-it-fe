@@ -8,11 +8,10 @@ import { timeCalculation } from "../../utils/timeCalculation";
 const provider = new ethers.JsonRpcProvider(import.meta.env.VITE_SEPOLIA_URL)
 
 const Dashboard = () => {
-  const { contract, signer } = useContext(Web3Context)
+  const { contract, signer, deadline } = useContext(Web3Context)
 
   const [ethBalance, setEthBalance] = useState(null)
   const [USDCBalance, setUSDCBalance] = useState(null)
-  const [deadline, setDeadline] = useState(null)
   const [recipient, setRecipient] = useState(null)
   const [owner, setOwner] = useState(null)
   const [token, setToken] = useState(null)
@@ -28,9 +27,6 @@ const Dashboard = () => {
       const initToken = new ethers.Contract(newToken, tokenThinABI, signer)
       setToken(initToken)
       setUSDCBalance(Number(await initToken.balanceOf(await contract.getAddress())))
-      
-      const initDeadline = await contract.deadline()
-      setDeadline(Number(initDeadline))
 
       const initRecipient = await contract.recipientAddress()
       setRecipient(initRecipient)
