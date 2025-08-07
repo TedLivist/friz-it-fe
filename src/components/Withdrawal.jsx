@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 const Withdrawal = () => {
   const { signer, contract, ethBalance, USDCBalance, recipient } = useContext(Web3Context)
 
-  const [localUSDC, setLocalUSDC] = useState('')
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -56,6 +55,12 @@ const Withdrawal = () => {
           <form onSubmit={handleWithdrawal}>
             <button type="submit">Withdraw funds</button>
           </form>
+
+          <div>
+            Only the owner can withdraw the balance<br/>
+            Triggering a withdrawal transfers the balance to the declared recipient<br />
+            Gas fees apply for this action
+          </div>
         </div>
       )}
     </>
