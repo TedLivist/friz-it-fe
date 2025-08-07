@@ -1,0 +1,13 @@
+.indicator-wrapper {
+  width: 100vw;
+  height: 15px;
+  border-radius: 10px;
+}
+
+.green-bg {
+  background-color: #E1FCED;
+}
+
+.red-bg {
+  background-color: red;
+}
