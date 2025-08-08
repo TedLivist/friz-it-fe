@@ -1,10 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { Web3Context } from "../App";
 import { ethers } from "ethers";
+import { useContract } from "../ContractContext";
+import { simulateContract } from "wagmi/actions";
+import { contractABI, contractAddress } from "../../utils/contractDetails";
+import { useWriteContract } from "wagmi";
+import { config } from "../../wagmi.config";
+
+const provider = new ethers.BrowserProvider(window.ethereum);
 
 const Withdrawal = () => {
-  const { signer, contract, ethBalance, USDCBalance, recipient } = useContext(Web3Context)
-
+  const { isConnected, ethBalance, usdcBalance, recipient } = useContract()
+  const { writeContract } = useWriteContract()
+  
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -19,34 +27,38 @@ const Withdrawal = () => {
 
   const handleWithdrawal = async (e) => {
     e.preventDefault()
-
+    
     try {
-      if (!contract.runner) {
-        console.error("Invalid signer!")
-      }
-
-      const tx = await contract.withdrawBalance()
-
-      console.log(tx.hash)
-      console.log(tx)
-    } catch (e) {
-      console.error(e.reason)
-      setError(e.reason)
+      // Simulate first, so that error is returned
+      // before actual wallet popup for transaction signing
+      // just like in ether.js
+      await simulateContract(config, {
+        address: contractAddress,
+        abi: contractABI,
+        functionName: 'withdrawBalance',
+      })
+      
+      // If simulation passes, execute
+      writeContract({
+        address: contractAddress,
+        abi: contractABI,
+        functionName: 'withdrawBalance',
+      })
+    } catch (err) {
+      setError(err?cause.reason)
     }
   }
 
   return (
     <>
-      {signer && (
+      {isConnected && (
         <div>
           Withdraw Funds
           Withdraw the ETH and USDC to the recipient address
-          {USDCBalance && (
-            <div>
-              <div>{ethers.formatEther(ethBalance.toString())} ETH</div>
-              <div>{ethers.formatUnits(USDCBalance, 6)} USDC</div>
-            </div>
-          )}
+          <div>
+            <div>{ethBalance} ETH</div>
+            <div>{usdcBalance} USDC</div>
+          </div>
           <div>Recipient address<br/>{recipient}</div>
 
           {(error) && (
@@ -57,8 +69,8 @@ const Withdrawal = () => {
           </form>
 
           <div>
-            Only the owner can withdraw the balance<br/>
             Triggering a withdrawal transfers the balance to the declared recipient<br />
+            Only the owner can withdraw the balance<br/>
             Gas fees apply for this action
           </div>
         </div>

@@ -1,10 +1,16 @@
 import { NavLink } from "react-router-dom";
 // import '../stylings/Navbar.css'
-import { Web3Context } from "../App";
-import { useContext } from "react";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 const Navbar = () => {
-  const { contract, signer, disconnectWallet, connectWallet } = useContext(Web3Context)
+  const { address, isConnected } = useAccount()
+  const { connect, connectors } = useConnect()
+  const { disconnect } = useDisconnect()
+
+  const handleConnect = () => {
+    const injectConnector = connectors.find(c => c.id === 'injected')
+    if(injectConnector) connect({ connector: injectConnector })
+  }
 
   return (
     <div className="navbar-wrapper">
@@ -12,16 +18,19 @@ const Navbar = () => {
       <NavLink to="/" className="nav-link">Homepage</NavLink>
       <NavLink to="/manageDeadline" className="nav-link">Deadline</NavLink>
       <NavLink to="/withdrawal" className="nav-link">Withdrawal</NavLink>
-      {signer.address && (
-        <span className="nav-link">{signer.address.slice(0, 6)}...{signer.address.slice(-4)}</span>
+      
+      {isConnected && address && (
+        <span className="nav-link">
+          {address.slice(0, 6)}...{address.slice(-4)}
+        </span>
       )}
-      {!signer.address && (
-        <button className="nav-link" onClick={connectWallet}>
+      {!isConnected && (
+        <button className="nav-link" onClick={handleConnect}>
           Connect
         </button>
       )}
-      {contract && (
-        <button className="nav-link" onClick={disconnectWallet}>
+      {isConnected && (
+        <button className="nav-link" onClick={() => disconnect()}>
           Disconnect
         </button>
       )}
