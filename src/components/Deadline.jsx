@@ -1,28 +1,18 @@
-import { useContext, useEffect, useState } from "react";
-import { Web3Context } from "../App";
+import { useEffect, useState } from "react";
 import { timeCalculation } from "../../utils/timeCalculation";
 import { useContract } from "../ContractContext";
 import { contractABI, contractAddress } from "../../utils/contractDetails";
-import { simulateContract } from "viem/actions";
 import { config } from "../../wagmi.config";
-import { useSimulateContract } from "wagmi";
+import { simulateContract } from "wagmi/actions";
 
 const Deadline = () => {
 
-  const { contract, deadline, isConnected } = useContract()
+  const { deadline, isConnected } = useContract()
   
   const [newDeadline, setNewDeadline] = useState('')
   const [timerQuote, setTimerQuote] = useState('')
   const [error, setError] = useState("")
-  const [secToSimulate, setSecToSimulate] = useState('')
-
-  const { error: simulateError } = useSimulateContract({
-    address: contractAddress,
-    abi: contractABI,
-    functionName: 'adjustDeadline',
-    args: [secToSimulate]
-  })
-
+  
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -44,25 +34,22 @@ const Deadline = () => {
     const newDateInMilliseconds = newDate.getTime()
     const newDateInSeconds = newDateInMilliseconds / 1000
 
-    setSecToSimulate(newDateInSeconds)
-
     try {
-      if (!contract.runner) {
-        console.error("Invalid signer!")
-        return
-      }
+      await simulateContract(config, {
+        address: contractAddress,
+        abi: contractABI,
+        functionName: 'adjustDeadline',
+        args: [newDateInSeconds]
+      })
 
-      if (simulateError) {
-        setError(simulateError.cause.reason)
-        return
-      }
-
-      const tx = await contract.adjustDeadline(newDateInSeconds)
-      console.log(tx.hash)
-      console.log(tx)
+      writeContract({
+        address: contractAddress,
+        abi: contractABI,
+        functionName: 'adjustDeadline',
+        args: [newDateInSeconds]
+      })
     } catch (e) {
-      console.error(e.reason)
-      setError(e.reason)
+      setError(e?.cause.reason)
     }
   }
 

@@ -7,8 +7,6 @@ import { contractABI, contractAddress } from "../../utils/contractDetails";
 import { useWriteContract } from "wagmi";
 import { config } from "../../wagmi.config";
 
-const provider = new ethers.BrowserProvider(window.ethereum);
-
 const Withdrawal = () => {
   const { isConnected, ethBalance, usdcBalance, recipient } = useContract()
   const { writeContract } = useWriteContract()
@@ -45,7 +43,7 @@ const Withdrawal = () => {
         functionName: 'withdrawBalance',
       })
     } catch (err) {
-      setError(err?cause.reason)
+      setError(err?.cause.reason)
     }
   }
 
