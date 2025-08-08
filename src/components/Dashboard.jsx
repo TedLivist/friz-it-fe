@@ -2,31 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { Web3Context } from "../App";
 import { ethers } from "ethers";
 import { timeCalculation } from "../../utils/timeCalculation";
+import { useContract } from "../ContractContext";
 
 const provider = new ethers.JsonRpcProvider(import.meta.env.VITE_SEPOLIA_URL)
 
 const Dashboard = () => {
-  const { contract, signer,
-    deadline, ethBalance,
-    USDCBalance, recipient } = useContext(Web3Context)
-
-  const [owner, setOwner] = useState(null)
+  const { ethBalance, usdcBalance, deadline, owner, recipient, isConnected } = useContract()
   const [timerQuote, setTimerQuote] = useState('')
-
-  useEffect(() => {
-    if (!signer) return
-
-    const initializeVariables = async () => {
-      const initOwner = await contract.owner()
-      setOwner(initOwner)
-
-      // const networkName = await provider.getNetwork()
-      // console.log(networkName.name)
-    }
-
-    initializeVariables()
-  }, [signer])
-
+  
   useEffect(() => {
     if(!deadline) return
 
@@ -44,19 +27,19 @@ const Dashboard = () => {
     return () => clearInterval(interval)
   }, [deadline])
 
+  // another form conditional rendering -
+  // just ensure that all the useState and useEffect
+  // declarations are done before it
+  if (!isConnected) return null
+
   return (
     <>
-      {signer && (
-        <div>
-          Hahaha. Home
-          <div>ETH Balance | {ethBalance}</div>
-          <div>USDC Balance | {USDCBalance}</div>
-          <div>Deadline timer | {timerQuote}</div>
-          <div>Owner | {owner}</div>
-          <div>Recipient address | {recipient}</div>
-          {/* {console.log(USDCBalance)} */}
-        </div>
-      )}
+      <div>Hahaha. Home</div>
+      <div>ETH Balance | {ethBalance}</div>
+      <div>USDC Balance | {usdcBalance}</div>
+      <div>Deadline timer | {timerQuote}</div>
+      <div>Owner | {owner}</div>
+      <div>Recipient address | {recipient}</div>
     </>
   );
 }
